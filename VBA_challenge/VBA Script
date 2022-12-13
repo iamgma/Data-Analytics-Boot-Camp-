@@ -1,0 +1,62 @@
+Sub MultipleYearStockData():
+    Dim ws As Worksheet
+    Dim firstrow As Long
+    Dim lastrow As Long
+    Dim rw As Long
+    Dim totalvolume As Double
+    Dim ticker As String
+    Dim openprice As Double
+    Dim closeprice As Double
+    Dim changeprice As Double
+    Dim changepricepct As Double
+    Dim outputrow As Long
+
+    For Each ws In Worksheets
+            
+    ws.Cells(1, 9).Value = "Ticker"
+    ws.Cells(1, 10).Value = "Yearly Change"
+    ws.Cells(1, 11).Value = "Percent Change"
+    ws.Cells(1, 12).Value = "Total Stock Volume"
+    ws.Cells(1, 16).Value = "Ticker"
+    ws.Cells(1, 17).Value = "Value"
+    ws.Cells(2, 15).Value = "Greatest % Increase"
+    ws.Cells(3, 15).Value = "Greatest % Decrease"
+    ws.Cells(4, 15).Value = "Greatest Total Volume"
+    
+    firstrow = 2
+    lastrow = 753001
+    totalvolume = 0
+    ticker = ws.Cells(2, 1).Value
+    openprice = 0
+    closeprice = 0
+    outputrow = 2
+        
+    For rw = firstrow To lastrow
+        If ws.Cells(rw, 1).Value = ticker And ws.Cells(rw - 1, 1).Value <> ticker Then
+        totalvolume = ws.Cells(rw, 7).Value
+        openprice = ws.Cells(rw, 3).Value
+               
+    ElseIf ws.Cells(rw, 1).Value = ticker And ws.Cells(rw + 1, 1).Value <> ticker Then
+        totalvolume = totalvolume + ws.Cells(rw, 7).Value
+        closeprice = ws.Cells(rw, 6).Value
+        changeprice = closeprice - openprice
+        changepricepct = changeprice / openprice
+            
+        ws.Cells(outputrow, 9).Value = ticker
+        ws.Cells(outputrow, 10).Value = changeprice
+        ws.Cells(outputrow, 11).Value = changepricepct
+        ws.Cells(outputrow, 12).Value = totalvolume
+                
+        outputrow = outputrow + 1
+                
+        ticker = ws.Cells(rw + 1, 1).Value
+    
+    Else
+        totalvolume = totalvolume + ws.Cells(rw, 7).Value
+    
+    End If
+        Next rw
+       
+    Next ws
+End Sub
+
